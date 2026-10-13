@@ -163,7 +163,7 @@ describe('management requests', () => {
     await api.visibility('id', 'public')
     await api.remove('id')
     await api.preview('id', 'download')
-    await api.init('photo.png', 123, 'image/png')
+    await api.init('photo.png', 123, 'image/png', '随手')
     await api.credentials('id')
     await api.complete('id')
     expect(
@@ -192,6 +192,7 @@ describe('management requests', () => {
           fileName: 'photo.png',
           sizeBytes: 123,
           mimeType: 'image/png',
+          category: '随手',
         }),
       ],
       ['/api/uploads/id/credentials', 'POST', '{}'],

@@ -46,30 +46,28 @@ onBeforeUnmount(() => {
         ><span class="brand-symbol"
           ><span></span><span></span><span></span><span></span></span
         ><span class="brand-name"
-          >拾光 <span class="brand-slash">/</span
+          >照影 <span class="brand-slash">/</span
           ><span class="brand-en">STUDIO</span></span
         ></RouterLink
       >
       <div class="login-story-main">
-        <span class="admin-eyebrow">A HOME FOR YOUR MOMENTS</span>
-        <h1>给影像，<br />一个<span>家。</span></h1>
-        <p>
-          收藏所见，整理所爱。<br />让每一个值得记住的片刻，都有自己的位置。
-        </p>
+        <span class="admin-eyebrow">藏影录</span>
+        <h1>藏影<br /><span>成卷。</span></h1>
+        <p>收存所见，随时可阅。</p>
         <div class="login-orbit" aria-hidden="true">
           <span></span><AppIcon name="sun" :size="68" />
         </div>
       </div>
-      <span class="login-story-footer">IMAGE VIEW / ADMINISTRATION</span>
+      <span class="login-story-footer">照影 / ADMIN CONSOLE</span>
     </section>
     <section class="login-form-panel" aria-labelledby="login-title">
       <RouterLink to="/" class="login-back"
         ><AppIcon name="left" :size="15" /> 返回公开图库</RouterLink
       >
       <form class="login-form" @submit.prevent="login">
-        <span class="admin-eyebrow">WELCOME BACK</span>
-        <h2 id="login-title">进入管理工作台</h2>
-        <p class="login-intro">验证管理员身份，继续整理你的影像。</p>
+        <span class="admin-eyebrow">入卷</span>
+        <h2 id="login-title">进入藏影录</h2>
+        <p class="login-intro">输入令牌以继续。</p>
         <label for="admin-token" class="field-label">管理令牌</label>
         <div class="token-field">
           <input
@@ -107,11 +105,11 @@ onBeforeUnmount(() => {
         </button>
         <div class="login-session-note">
           <AppIcon name="lock" :size="17" /><span
-            >刷新页面需重新验证。访客浏览公开图库无需登录。</span
+            >令牌仅保存在当前页面。</span
           >
         </div>
       </form>
-      <span class="login-panel-footer">仅供管理员使用 · 拾光管理平台</span>
+      <span class="login-panel-footer">照影 · 管理入口</span>
     </section>
   </main>
 </template>

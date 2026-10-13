@@ -6,7 +6,7 @@ export function uploadErrorMessage(cause: unknown, origin = ''): string {
   if (cause instanceof ApiError) return cause.message
   if (
     cause instanceof Error &&
-    /^(不能上传|单个文件|文件名|上传地址|文件直传|上传连接|上传超时|上传模式)/.test(
+    /^(不能上传|单个文件|文件名|分类|上传地址|文件直传|上传连接|上传超时|上传模式)/.test(
       cause.message,
     )
   )

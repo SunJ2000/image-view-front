@@ -62,7 +62,7 @@ async function load(force = false) {
     const detail = await photosApi.detail(props.id, signal)
     if (run !== generation) return
     photo.value = detail
-    document.title = `${detail.displayName} · 拾光`
+    document.title = `${detail.displayName} · 照影`
     const preview = await photosApi.preview(props.id, 'preview', force)
     if (run !== generation) return
     previewable.value = preview.previewable
@@ -146,7 +146,7 @@ watch(
 )
 onMounted(async () => {
   oldOverflow = document.body.style.overflow
-  oldTitle = '拾光 · 公开影像集'
+  oldTitle = '照影 · 公开影像集'
   previousFocus = document.activeElement as HTMLElement | null
   document.body.style.overflow = 'hidden'
   await nextTick()
@@ -174,7 +174,7 @@ onBeforeUnmount(() => {
     >
       <header class="viewer-header">
         <div class="viewer-heading">
-          <span class="viewer-mark">拾光<span> / </span>IMAGE VIEW</span
+          <span class="viewer-mark">照影<span> / </span>IMAGE VIEW</span
           ><span class="viewer-divider"></span>
           <h2 id="viewer-title">{{ photo?.displayName || '图片预览' }}</h2>
         </div>
@@ -264,6 +264,7 @@ onBeforeUnmount(() => {
       <footer class="viewer-footer">
         <div class="viewer-meta">
           <span>{{ photo ? formatDate(photo.createdAt) : '—' }}</span
+          ><span v-if="photo?.category">{{ photo.category }}</span
           ><span v-if="photo">{{ formatBytes(photo.sizeBytes) }}</span
           ><span v-if="dimensions">{{ dimensions }}</span
           ><span v-if="current >= 0" class="viewer-position"

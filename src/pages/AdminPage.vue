@@ -23,6 +23,8 @@ const pageSize = 15
 const status = ref<'ready' | 'pending' | 'deleting'>('ready')
 const mediaType = ref<'' | ManagedFile['mediaType']>('')
 const visibility = ref<'' | ManagedFile['visibility']>('')
+const category = ref('')
+const uploadCategory = ref('')
 const searchInput = ref('')
 const search = ref('')
 const busy = ref(true)
@@ -50,6 +52,7 @@ interface UploadItem {
   progress: number
   error: string
   context: UploadContext
+  category: string
 }
 const queue = ref<UploadItem[]>([])
 const unfinished = computed(
@@ -88,6 +91,7 @@ async function load() {
         status: status.value,
         mediaType: mediaType.value,
         visibility: visibility.value,
+        category: category.value.trim(),
         search: search.value,
       },
       signal,
@@ -113,6 +117,7 @@ function clearFilters() {
   search.value = ''
   mediaType.value = ''
   visibility.value = ''
+  category.value = ''
   status.value = 'ready'
   page.value = 1
 }
@@ -146,6 +151,8 @@ async function pump() {
             if (!disposed)
               selected.progress = Math.min(99, Math.round(ratio * 100))
           },
+          undefined,
+          selected.category,
         )
         if (disposed) break
         selected.state = 'done'
@@ -168,6 +175,11 @@ async function pump() {
 }
 function addFiles(files: FileList | File[] | null) {
   if (!files) return
+  const normalizedCategory = uploadCategory.value.trim()
+  if (!normalizedCategory) {
+    notify('请先填写分类。')
+    return
+  }
   for (const file of Array.from(files)) {
     const task: UploadItem = {
       uid: ++nextUid,
@@ -176,6 +188,7 @@ function addFiles(files: FileList | File[] | null) {
       progress: 0,
       error: '',
       context: { phase: 'init' },
+      category: normalizedCategory,
     }
     try {
       validateUpload(file)
@@ -212,7 +225,7 @@ function clearFinished() {
   )
 }
 
-watch([status, mediaType, visibility, search], () => {
+watch([status, mediaType, visibility, category, search], () => {
   if (page.value !== 1) page.value = 1
   else void load()
 })
@@ -234,11 +247,11 @@ onBeforeUnmount(() => {
         ><span class="brand-symbol"
           ><span></span><span></span><span></span><span></span></span
         ><span class="brand-name"
-          >拾光<span class="brand-slash">/</span
+          >照影<span class="brand-slash">/</span
           ><span class="brand-en">STUDIO</span></span
         ></RouterLink
       >
-      <div class="sidebar-section-label">工作空间</div>
+      <div class="sidebar-section-label">管理</div>
       <nav aria-label="管理导航">
         <RouterLink to="/admin" class="sidebar-link selected"
           ><AppIcon name="grid" :size="18" /> 文件管理
@@ -279,9 +292,9 @@ onBeforeUnmount(() => {
       <main class="admin-main">
         <div class="admin-page-heading">
           <div>
-            <span class="admin-eyebrow">YOUR PERSONAL COLLECTION</span>
-            <h1>整理每一帧。</h1>
-            <p>收藏、整理、分享，让好时光被看见。</p>
+            <span class="admin-eyebrow">藏影录</span>
+            <h1>藏影成卷</h1>
+            <p>收存、分类、发布。</p>
           </div>
           <button
             class="button button-dark"
@@ -311,7 +324,7 @@ onBeforeUnmount(() => {
             ><AppIcon name="upload" :size="25"
           /></span>
           <div>
-            <h2>把新的片刻，放进这里</h2>
+            <h2>收一帧入卷</h2>
             <p>
               拖放文件到这里，或<button
                 type="button"
@@ -319,10 +332,20 @@ onBeforeUnmount(() => {
                 @click="fileInput?.click()"
               >
                 选择文件</button
-              >。单个文件最大 5 GB，上传后默认私有。
+              >。单个文件最大 5 GB。
             </p>
+            <label class="upload-category-field"
+              >分类<input
+                v-model="uploadCategory"
+                class="admin-input"
+                type="text"
+                maxlength="64"
+                required
+                placeholder="例如：旅行、家人"
+                aria-label="上传分类"
+            /></label>
           </div>
-          <span class="dropzone-tag">DIRECT UPLOAD</span>
+          <span class="dropzone-tag">UPLOAD</span>
         </div>
         <section v-if="queue.length" class="upload-queue" aria-label="上传任务">
           <div class="upload-queue-heading">
@@ -336,9 +359,7 @@ onBeforeUnmount(() => {
               清除已结束任务
             </button>
           </div>
-          <p class="queue-hint">
-            刷新页面或退出会停止当前上传。未完成的记录可在“待上传”中清理。
-          </p>
+          <p class="queue-hint">中断的上传可在“待上传”中重试。</p>
           <div v-for="task in queue" :key="task.uid" class="upload-task">
             <AppIcon
               :name="task.state === 'done' ? 'check' : 'file'"
@@ -367,6 +388,16 @@ onBeforeUnmount(() => {
               <p v-if="task.error" class="upload-task-error">
                 {{ task.error }}
               </p>
+              <label class="upload-task-category"
+                >分类<input
+                  v-model="task.category"
+                  class="admin-input"
+                  type="text"
+                  maxlength="64"
+                  required
+                  :disabled="task.state !== 'queued'"
+                  aria-label="文件分类"
+              /></label>
             </div>
             <button
               v-if="task.state === 'queued' || task.state === 'uploading'"
@@ -453,7 +484,14 @@ onBeforeUnmount(() => {
               <option value="">全部可见性</option>
               <option value="private">私有</option>
               <option value="public">公开</option>
-            </select>
+            </select><input
+              v-model="category"
+              class="admin-input admin-category-filter"
+              type="search"
+              maxlength="64"
+              placeholder="按分类筛选"
+              aria-label="按分类筛选文件"
+            />
           </div>
           <div v-if="error" class="admin-list-state" role="alert">
             <AppIcon name="image" :size="35" />
@@ -474,17 +512,17 @@ onBeforeUnmount(() => {
             <h3>这里还没有文件</h3>
             <p>
               {{
-                search || visibility || mediaType
-                  ? '试试调整筛选条件，找回你要的片刻。'
+                search || visibility || mediaType || category
+                  ? '调整筛选条件。'
                   : status === 'ready'
-                    ? '上传第一份文件，开始收藏你的影像。'
+                    ? '上传文件后，这里会显示结果。'
                     : status === 'pending'
                       ? '暂无待上传记录。'
                       : '暂无正在删除的文件。'
               }}
             </p>
             <button
-              v-if="search || visibility || mediaType"
+              v-if="search || visibility || mediaType || category"
               class="button admin-button-secondary"
               type="button"
               @click="clearFilters"
@@ -555,6 +593,9 @@ onBeforeUnmount(() => {
                   <td>
                     <span class="admin-type-label">{{
                       typeLabels[file.mediaType]
+                    }}</span
+                    ><span v-if="file.category" class="admin-category-label">{{
+                      file.category
                     }}</span
                     ><span class="admin-size-label">{{
                       formatBytes(file.sizeBytes)
@@ -654,11 +695,11 @@ onBeforeUnmount(() => {
         </section>
         <p class="admin-bottom-note">
           <AppIcon name="lock" :size="13" />
-          文件默认私有。公开后，访客才能在图库中看到。
+          默认私有；公开后显示在图库。
         </p>
       </main>
       <footer class="admin-footer">
-        拾光 STUDIO <span>把片刻留住，把日常收藏。</span>
+        照影 STUDIO <span>藏影录 · 公开影像</span>
       </footer>
     </div>
     <div v-if="toast" class="admin-toast" role="status">

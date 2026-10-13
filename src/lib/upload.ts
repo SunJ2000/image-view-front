@@ -6,6 +6,7 @@ export interface UploadContext {
   id?: string
   phase: 'init' | 'transfer' | 'complete'
   checkpoint?: OSS.Checkpoint
+  category?: string
 }
 export function validateUpload(file: File) {
   if (!file.size) throw new Error('不能上传空文件。')
@@ -126,13 +127,21 @@ export async function uploadManagedFile(
   signal: AbortSignal,
   progress: (ratio: number) => void,
   transfer = putSigned,
+  category = '随手',
 ) {
   validateUpload(file)
+  if (!category.trim()) throw new Error('分类不能为空。')
   signal.throwIfAborted()
   if (context.phase !== 'complete') {
     const session = context.id
       ? await api.credentials(context.id, signal)
-      : await api.init(file.name.trim(), file.size, uploadMime(file), signal)
+      : await api.init(
+          file.name.trim(),
+          file.size,
+          uploadMime(file),
+          category,
+          signal,
+        )
     context.id = session.file.id
     context.phase = 'transfer'
     signal.throwIfAborted()

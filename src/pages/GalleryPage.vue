@@ -125,11 +125,11 @@ onBeforeUnmount(() => {
   <div class="site-shell">
     <a class="skip-link" href="#gallery">跳转到图库</a>
     <header class="site-header">
-      <RouterLink to="/" class="brand" aria-label="拾光，返回图库首页"
+      <RouterLink to="/" class="brand" aria-label="照影，返回影像集"
         ><span class="brand-symbol"
           ><span></span><span></span><span></span><span></span></span
         ><span class="brand-name"
-          >拾光<span class="brand-slash">/</span
+          >照影<span class="brand-slash">/</span
           ><span class="brand-en">IMAGE VIEW</span></span
         ></RouterLink
       >
@@ -141,27 +141,27 @@ onBeforeUnmount(() => {
           type="button"
           @click="about?.scrollIntoView({ behavior: 'smooth' })"
         >
-          关于拾光 <AppIcon name="upRight" :size="15" />
+          说明 <AppIcon name="upRight" :size="15" />
         </button>
       </nav>
       <span v-if="isDemo" class="demo-badge">示例预览</span
       ><span v-else class="header-note"
-        ><span class="status-dot"></span> 一些值得留住的片刻</span
+        ><span class="status-dot"></span> 公开影像</span
       >
     </header>
 
     <main>
       <section class="hero-section" aria-labelledby="hero-title">
         <div class="hero-eyebrow">
-          <span class="eyebrow-line"></span>A VISUAL JOURNAL<span
+          <span class="eyebrow-line"></span>照影小志<span
             class="hero-edition"
-            >VOL. 01</span
+            >卷一</span
           >
         </div>
         <div class="hero-main">
           <h1 id="hero-title">
-            把片刻，<br />留在<span class="hero-accent"
-              >这里<span class="accent-period">。</span
+            所见成卷，<br /><span class="hero-accent"
+              >照见<span class="accent-period">此间。</span
               ><svg
                 class="accent-underline"
                 viewBox="0 0 250 12"
@@ -178,16 +178,16 @@ onBeforeUnmount(() => {
           </h1>
           <div class="hero-description">
             <span class="hero-spark"><AppIcon name="sun" :size="38" /></span>
-            <p>走过的地方，看见的风景，<br />和生活里不经意的美好。</p>
-            <span class="hero-caption">每一帧，都是时间的回声。</span
+            <p>收远近山川，记朝夕所见。</p>
+            <span class="hero-caption">新卷在前。</span
             ><a href="#gallery" class="explore-link"
-              >慢慢看，随意逛 <span><AppIcon name="arrow" :size="18" /></span
+              >入卷阅览 <span><AppIcon name="arrow" :size="18" /></span
             ></a>
           </div>
         </div>
         <div class="hero-bottom">
-          <span>COLLECTING MOMENTS, NOT THINGS.</span
-          ><span>光影之间，自有故事 <AppIcon name="plus" :size="14" /></span>
+          <span>一卷所见</span
+          ><span>新卷在前 <AppIcon name="plus" :size="14" /></span>
         </div>
       </section>
 
@@ -261,8 +261,8 @@ onBeforeUnmount(() => {
             >关于「{{ search }}」的 {{ loading ? '…' : total }} 张影像
             <button type="button" class="text-button" @click="clearSearch">
               清除搜索 <AppIcon name="close" :size="12" /></button></span
-          ><span v-else>随光而行，随心记录。</span
-          ><span>按时间 · 最新在前 <span class="small-arrow">↓</span></span>
+          ><span v-else>依时而列。</span
+          ><span>新卷在前 <span class="small-arrow">↓</span></span>
         </div>
 
         <div
@@ -279,8 +279,8 @@ onBeforeUnmount(() => {
         </div>
         <div v-else-if="error" class="gallery-state" role="alert">
           <span class="state-icon"><AppIcon name="image" :size="30" /></span
-          ><span class="state-eyebrow">A LITTLE PAUSE</span>
-          <h3>稍等，影像还在路上</h3>
+          ><span class="state-eyebrow">暂不可阅</span>
+          <h3>此卷暂未展开</h3>
           <p>{{ error }}</p>
           <button class="button button-dark" type="button" @click="load">
             <AppIcon name="refresh" :size="16" /> 重新加载
@@ -290,14 +290,14 @@ onBeforeUnmount(() => {
           <span class="state-icon"
             ><AppIcon :name="search ? 'search' : 'sun'" :size="32" /></span
           ><span class="state-eyebrow">{{
-            search ? 'KEEP EXPLORING' : 'GOOD THINGS TAKE TIME'
+            search ? '未有相合' : '卷中暂无'
           }}</span>
-          <h3>{{ search ? '还没找到这一帧' : '美好的片刻，正在收集中' }}</h3>
+          <h3>{{ search ? '未找到相合影像' : '卷中暂无影像' }}</h3>
           <p>
             {{
               search
-                ? '换个关键词，或看看全部影像。'
-                : '这里还没有公开的图片，过些时候再来看看吧。'
+                ? '换个字词，再试一次。'
+                : '待管理员发布影像后，此处可见。'
             }}
           </p>
           <button
@@ -360,7 +360,7 @@ onBeforeUnmount(() => {
         </nav>
         <div v-else-if="!loading && !error && items.length" class="gallery-end">
           <span></span>
-          <p>看到这里，刚刚好。</p>
+          <p>已至卷末。</p>
           <AppIcon name="sun" :size="16" /><span></span>
         </div>
       </section>
@@ -369,13 +369,13 @@ onBeforeUnmount(() => {
     <footer ref="about" id="about" class="site-footer">
       <div class="footer-main">
         <div>
-          <span class="footer-label">ABOUT THIS LITTLE CORNER</span>
-          <p>让平凡的日子，<br />有迹可循<span>。</span></p>
+          <span class="footer-label">照影小记</span>
+          <p>所见成卷<span>。</span></p>
         </div>
         <div class="footer-about">
-          <span class="footer-about-title">关于拾光</span>
+          <span class="footer-about-title">小记</span>
           <p>
-            一本持续更新的影像手记。<br />记录所见，也分享生活里的小小心动。<br />很高兴，能在这里与你相遇。
+            公开影像，依时陈列。<br />内容由管理员维护。
           </p>
         </div>
         <a href="#" class="back-to-top" aria-label="返回顶部"
@@ -383,10 +383,10 @@ onBeforeUnmount(() => {
         /></a>
       </div>
       <div class="footer-bottom">
-        <span>© {{ new Date().getFullYear() }} 拾光 IMAGE VIEW</span
+        <span>© {{ new Date().getFullYear() }} 照影 IMAGE VIEW</span
         ><span
           ><RouterLink to="/admin">管理平台</RouterLink
-          ><span class="footer-dot"></span>用镜头记录，用时间收藏。</span
+          ><span class="footer-dot"></span>所见成卷</span
         >
       </div>
     </footer>

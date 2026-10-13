@@ -84,7 +84,9 @@ onBeforeUnmount(() => {
           <h2 id="admin-preview-title">{{ file.displayName }}</h2>
           <p>
             {{ file.visibility === 'public' ? '公开' : '私有' }} ·
-            {{ formatBytes(file.sizeBytes) }}
+            {{ formatBytes(file.sizeBytes) }}<span v-if="file.category">
+              · {{ file.category }}</span
+            >
           </p>
         </div>
         <button

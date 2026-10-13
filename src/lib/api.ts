@@ -3,6 +3,7 @@ export interface Photo {
   displayName: string
   mimeType: string
   mediaType: 'image'
+  category?: string
   sizeBytes: number
   createdAt: string
   updatedAt: string
@@ -46,6 +47,7 @@ function validPhoto(value: unknown): value is Photo {
     typeof photo.displayName === 'string' &&
     typeof photo.mimeType === 'string' &&
     photo.mediaType === 'image' &&
+    (photo.category === undefined || typeof photo.category === 'string') &&
     typeof photo.sizeBytes === 'number' &&
     Number.isFinite(photo.sizeBytes) &&
     typeof photo.createdAt === 'string' &&

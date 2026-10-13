@@ -123,6 +123,7 @@ onBeforeUnmount(() => {
       >
       <span class="photo-number">{{ String(index + 1).padStart(2, '0') }}</span>
       <span class="photo-date">{{ formatDate(photo.createdAt) }}</span>
+      <span v-if="photo.category" class="photo-category">{{ photo.category }}</span>
     </div>
   </article>
 </template>

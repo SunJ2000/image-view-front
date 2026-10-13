@@ -201,6 +201,7 @@ describe('upload lifecycle', () => {
       'photo.jpg',
       file.size,
       'image/jpeg',
+      '随手',
       expect.any(AbortSignal),
     )
     expect(api.complete).toHaveBeenCalledWith(
@@ -211,6 +212,21 @@ describe('upload lifecycle', () => {
     expect(transfer.mock.invocationCallOrder[0]).toBeLessThan(
       vi.mocked(api.complete).mock.invocationCallOrder[0]!,
     )
+  })
+  it('requires a category before creating a server record', async () => {
+    const api = stubApi()
+    await expect(
+      uploadManagedFile(
+        file,
+        api,
+        context(),
+        new AbortController().signal,
+        vi.fn(),
+        vi.fn(),
+        '',
+      ),
+    ).rejects.toThrow('分类不能为空')
+    expect(api.init).not.toHaveBeenCalled()
   })
   it('renews credentials for the same record after a transfer failure', async () => {
     const api = stubApi()

@@ -545,6 +545,15 @@ h1 {
   color: #959789;
   letter-spacing: 0.5px;
 }
+.photo-category {
+  grid-column: 1 / -1;
+  justify-self: start;
+  color: #7f8f6f;
+  background: #edf2e5;
+  border-radius: 999px;
+  padding: 3px 7px;
+  font-size: 10px;
+}
 .photo-fallback {
   position: absolute;
   inset: 0;

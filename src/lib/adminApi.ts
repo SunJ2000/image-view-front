@@ -6,6 +6,7 @@ export interface ManagedFile {
   displayName: string
   mimeType: string
   mediaType: 'image' | 'video' | 'other'
+  category: string
   sizeBytes: number
   status: 'pending' | 'ready' | 'deleting' | 'deleted'
   visibility: 'private' | 'public'
@@ -18,6 +19,7 @@ export interface FileFilters {
   pageSize?: number
   search?: string
   mediaType?: '' | ManagedFile['mediaType']
+  category?: string
   visibility?: '' | ManagedFile['visibility']
   status?: 'pending' | 'ready' | 'deleting'
 }
@@ -117,7 +119,7 @@ export function createAdminApi(
         pageSize: String(filters.pageSize || 20),
         status: filters.status || 'ready',
       })
-      for (const key of ['search', 'visibility', 'mediaType'] as const)
+      for (const key of ['search', 'visibility', 'mediaType', 'category'] as const)
         if (filters[key]) query.set(key, filters[key]!)
       const result = await request<ManagedList>(
         `/files?${query}`,
@@ -175,14 +177,23 @@ export function createAdminApi(
       fileName: string,
       sizeBytes: number,
       mimeType: string,
+      category: string,
       signal?: AbortSignal,
-    ) =>
-      request<UploadSession>(
+    ) => {
+      const normalizedCategory = category.trim()
+      if (!normalizedCategory) throw new ApiError(400, '分类不能为空。')
+      return request<UploadSession>(
         '/uploads/init',
         'POST',
-        { fileName, sizeBytes, mimeType },
+        {
+          fileName,
+          sizeBytes,
+          mimeType,
+          category: normalizedCategory,
+        },
         signal,
-      ),
+      )
+    },
     credentials: (id: string, signal?: AbortSignal) =>
       request<UploadSession>(
         `/uploads/${encodeURIComponent(id)}/credentials`,
