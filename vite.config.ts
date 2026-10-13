@@ -3,6 +3,7 @@ import { defineConfig, loadEnv } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: '/image-view/',
   plugins: [vue()],
   server: {
     proxy: {

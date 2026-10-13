@@ -1,11 +1,9 @@
 # Install as /etc/nginx/conf.d/image-view.conf.
-# Replaces the supplied HTTP-only image-view.conf; do not add a second server block.
-# Frontend archive must extract to /var/www/image-view-front/dist/index.html.
+# Upload the CONTENTS of dist/ to /opt/image-view-front/.
+# Expected file: /opt/image-view-front/index.html.
 server {
     listen 80;
     server_name sunj2000.com 106.14.136.223;
-    root /var/www/image-view-front/dist;
-    index index.html;
 
     location /api/ {
         # No trailing slash: preserve the backend's /api/ prefix.
@@ -19,14 +17,33 @@ server {
         proxy_send_timeout 600s;
     }
 
-    location ^~ /assets/ {
-        try_files $uri =404;
+    location = /image-view {
+        return 301 /image-view/$is_args$args;
+    }
+
+    location ^~ /image-view/assets/ {
+        alias /opt/image-view-front/assets/;
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
 
-    location / {
-        try_files $uri $uri/ /index.html;
+    location = /image-view/favicon.svg {
+        alias /opt/image-view-front/favicon.svg;
+    }
+
+    location = /image-view/index.html {
+        alias /opt/image-view-front/index.html;
         add_header Cache-Control "no-cache" always;
+    }
+
+    location /image-view/ {
+        alias /opt/image-view-front/;
+        index index.html;
+        try_files $uri $uri/ /image-view/index.html;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location / {
+        return 404;
     }
 }
